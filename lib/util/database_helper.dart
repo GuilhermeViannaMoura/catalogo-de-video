@@ -1,5 +1,8 @@
+import 'video_genero.dart';
 import 'usuario.dart';
 import 'package:sqflite/sqflite.dart';
+import 'video.dart';
+import 'genero.dart';
 import 'package:path/path.dart';
 
 class DatabaseHelper {
@@ -44,39 +47,97 @@ class DatabaseHelper {
             ):""");},
         version: _version);
   }
-  //Adiciona usuario
+  //Metodos de adicionar
   static Future<int> addUsuario(Usuario usuario) async {
     final db = await _getDB();
     return await db.insert("Usuario", usuario.toJson(),
         conflictAlgorithm: ConflictAlgorithm.replace);
   }
+
+  static Future<int> addVideo(Video video) async {
+    final db = await _getDB();
+    return await db.insert("Video", video.toJson(),
+        conflictAlgorithm: ConflictAlgorithm.replace);
+  }
+
+  static Future<int> addGenero(Genero genero) async {
+    final db = await _getDB();
+    return await db.insert("Genero", genero.toJson(),
+        conflictAlgorithm: ConflictAlgorithm.replace);
+  }
+
+  //Lembrando que ao registrar um video tem N numero de generos, 
+  //entao tem que ser feita essa chamada de acordo com a quantidade de generos de um video novo
+  static Future<int> addVideoGenero(VideoGenero videoGenero) async {
+    final db = await _getDB();
+    return await db.insert("video_genero", videoGenero.toJson(),
+        conflictAlgorithm: ConflictAlgorithm.replace);
+  }
+
   //Atualiza Usuario
-  static Future<int> updateUsuario(Usuario usuario) async {
+/*static Future<int> updateUsuario(Usuario usuario) async {
     final db = await _getDB();
     return await db.update("Usuario", usuario.toJson(),
         where: 'id = ?',
         whereArgs: [usuario.id],
         conflictAlgorithm: ConflictAlgorithm.replace);
+  } */
+//Nao acho que precisa atualizar usuario so os videos
+
+  //Update do Video
+  static Future<int> updateVideo(Video video) async {
+    final db = await _getDB();
+    return await db.update("Video", video.toJson(),
+        where: 'id = ?',
+        whereArgs: [video.id],
+        conflictAlgorithm: ConflictAlgorithm.replace);
   }
-  //Deleta Usuario
-  static Future<int> deleteUsuario(Usuario usuario) async {
+  //Lembrando que o update dos generos do video tem mais sentido com apenas delete e add do video_genero
+
+  //Metodos de deletar 
+  static Future<int> deleteVideo(Video video) async {
     final db = await _getDB();
     return await db.delete(
-      "Usuario",
+      "Video",
       where: 'id = ?',
-      whereArgs: [usuario.id],
+      whereArgs: [video.id],
     );
   }
-  //Lista todos os Usuarios
-  static Future<List<Usuario>?> getAllUsuarios() async {
+
+  static Future<int> deleteVideoGenero(VideoGenero videoGenero) async {
+    final db = await _getDB();
+    return await db.delete(
+      "video_genero",
+      where: 'id = ?',
+      whereArgs: [videoGenero.id],
+    );
+  }
+
+
+  //Lista todos os videos
+  static Future<List<Video>?> getAllVideos() async {
     final db = await _getDB();
 
-    final List<Map<String, dynamic>> maps = await db.query("Usuario");
+    final List<Map<String, dynamic>> maps = await db.query("Video");
 
     if (maps.isEmpty) {
       return null;
     }
 
-    return List.generate(maps.length, (index) => Usuario.fromJson(maps[index]));
+    return List.generate(maps.length, (index) => Video.fromJson(maps[index]));
+  }
+  
+
+  //Lista todos os generos
+  static Future<List<Genero>?> getAllGeneros() async {
+    final db = await _getDB();
+
+    final List<Map<String, dynamic>> maps = await db.query("Genero");
+
+    if (maps.isEmpty) {
+      return null;
+    }
+
+    return List.generate(maps.length, (index) => Genero.fromJson(maps[index]));
   }
 }
