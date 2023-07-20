@@ -42,11 +42,19 @@ class _MeusVideosPageState extends State<MeusVideosPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Meus Vídeos"),
+        title: Text("CatalogoV"),
         actions: [
           TextButton(
             onPressed: () {
-              // Ação do botão "Sair"
+              //Navigator.pushNamed(context, AdicionarVideoPage.routeName);
+            },
+            child: Text(
+              "Adicionar Video",
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+          TextButton(
+            onPressed: () {
               Navigator.pop(context); // Volta para a tela anterior
             },
             child: Text(

@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:videos/controller/db_controller.dart';
+import 'package:videos/pages/login.dart';
+import '../classes/usuario.dart';
 
 
 
 class CadastroPage extends StatefulWidget {
   static const routeName = "/cadastro";
 
-  
   CadastroPage({Key? key});
 
   @override
@@ -13,80 +15,95 @@ class CadastroPage extends StatefulWidget {
 }
 
 class _CadastroPageState extends State<CadastroPage> {
-  TextEditingController _emailController = TextEditingController(); //Email
-  TextEditingController _senhaController = TextEditingController(); //senha
-  TextEditingController _nomeController = TextEditingController(); //Nome
+  String? _email, _password, _name;
+  late DataBaseController controller;
+  final _formKey = GlobalKey<FormState>();
+
+  _CadastroPageState(){
+    this.controller = DataBaseController();
+  }
   
-  
+  void _submit() async {
+    final form = _formKey.currentState;
+
+    if (form!.validate()) {      
+      form.save();
+
+      try{
+       bool userCheck = await controller.checkCadastro(_email!);
+        if (userCheck) {
+          await controller.addUsuario(Usuario(name: _name!, email: _email!, password: _password!));
+          Navigator.pushNamed(context, LoginPage.routeName);
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Email already in use!')),
+          );
+        }
+      } catch (e) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(e.toString())),
+          );     
+      }
+    }
+  }
   
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Cadastrar")),
+      appBar: AppBar(title: Text("CatalogoV")),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            //Nome
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: SizedBox(
-                width: 500,
-                  child: TextField(
-                controller: _nomeController,
-                decoration: InputDecoration(
-                  labelText: 'Nome',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              ),
-            ),
-            //Email
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: SizedBox(
-                width: 500,
-                  child: TextField(
-                controller: _emailController,
-                decoration: InputDecoration(
-                  labelText: 'Email',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              ),
-
-            //Senha
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: SizedBox(
-                width: 500,
-                child: TextField(
-                controller: _senhaController,
-                obscureText: true,
-                decoration: InputDecoration(
-                  labelText: 'Senha',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              ),
-            // Botao Cadastrar
+            Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: SizedBox(
+                      width: 500,
+                      child: TextFormField(
+                        onSaved: (newValue) => _name = newValue,
+                        decoration: InputDecoration(
+                          labelText: 'Nome',
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: SizedBox(
+                      width: 500,
+                      child: TextFormField(
+                        onSaved: (newValue) => _email = newValue,
+                        decoration: InputDecoration(
+                          labelText: 'Email',
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: SizedBox(
+                      width: 500,
+                      child: TextFormField(
+                        onSaved: (newValue) => _password = newValue,
+                        decoration: InputDecoration(
+                          labelText: 'Senha',
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              )
             ),
             ElevatedButton(
-              onPressed: () {
-                String email = _emailController.text;
-                String senha = _senhaController.text;
-                String nome = _nomeController.text;
-
-                // Printando na tela só para fim de teste, depois que o banco de dado tiver feito, tem que implementar a adicao ao BD
-                print("Nome: $nome");
-                print("Email: $email");
-                print("Senha: $senha");
-                //Volta para tela HOME
-                Navigator.pushNamed(context, "/login");
-                
-              },
+              onPressed: _submit,
               child: Text("Cadastar"),
             ),
           ],

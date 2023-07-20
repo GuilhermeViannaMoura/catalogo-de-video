@@ -91,4 +91,36 @@ class DataBaseController {
 
     return List.generate(maps.length, (index) => Genero.fromJson(maps[index]));
   }
+
+  //Login do usuario
+  Future<Usuario> getLogin(String email, String password) async {
+    var db = await con.db;
+    String sql = """
+      SELECT * FROM Usuario WHERE email = '${email}' AND password = '${password}' 
+    """;
+   
+    var res = await db.rawQuery(sql);
+   
+    if (res.length > 0) {
+      return Usuario.fromJson(res.first);
+    }
+    
+    return Usuario(id: -1, name: "", password: "", email: "");
+  }
+
+  //Check se existe cadastrado
+  Future<bool> checkCadastro(String email) async {
+    var db = await con.db;
+    String sql = """
+      SELECT * FROM Usuario WHERE email = '${email}'
+    """;
+
+    var res = await db.rawQuery(sql);
+
+    if (res.length > 0) {
+      return false; 
+    }
+
+    return true;
+  }
 }

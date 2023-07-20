@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:videos/controller/db_controller.dart';
+import 'package:videos/pages/cadastro.dart';
 import '../classes/video.dart';
 import '../classes/usuario.dart';
 import '../components/videoList.dart';
+import '../pages/login.dart';
 
 
 
@@ -75,12 +77,11 @@ class _VideosAnonimoPageState extends State<VideosAnonimoPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("CatoVideo"),
+        title: Text("CatalogoV"),
         actions: [
           TextButton(
             onPressed: () {
-              // Ação do botão "Logar"
-              Navigator.pop(context); // Volta para a tela anterior
+              Navigator.pushNamed(context, LoginPage.routeName); // Volta para a tela anterior
             },
             child: Text(
               "Logar",
@@ -89,8 +90,7 @@ class _VideosAnonimoPageState extends State<VideosAnonimoPage> {
           ),
           TextButton(
             onPressed: () {
-              // Ação do botão "Cadastrar"
-              Navigator.pushNamed(context, "/cadastro"); // Vai para tela de cadastro
+              Navigator.pushNamed(context, CadastroPage.routeName);
             },
             child: Text(
               "Cadastrar",

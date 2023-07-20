@@ -41,7 +41,7 @@ class _VideosLogadoPageState extends State<VideosLogadoPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("CatoVídeo"),
+        title: Text("CatalogoV"),
         actions: [TextButton(
             onPressed: () {
               // Ação do botão "Logar"
