@@ -1,11 +1,26 @@
 import 'package:flutter/material.dart';
 import '../classes/video.dart';
+import '../classes/genero.dart';
 
 
 class VideoList extends StatelessWidget {
-  final List<Video> videos;
+  final List<Video>? videos;
+  final Map<int, List<Genero>>? generos;
+  final Map<int, String> tipo = {0: 'Filme', 1: 'Serie'};
 
-  VideoList(this.videos);
+  VideoList(this.videos, this.generos);
+
+
+  String stringGeneros(int? idVideo){
+    var frase = '';
+    List<Genero>? videoGeneros = this.generos?[idVideo!];
+    if(videoGeneros != null){
+    for(int i = 0; i < videoGeneros.length; i ++){
+      frase = frase+' '+ videoGeneros[i].name;
+    }
+    }
+    return frase;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +30,7 @@ class VideoList extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             DropdownButton<String>(
-              items: <String>['Gênero', 'Ação', 'Comédia', 'Drama', 'Ficção'].map((String value) {
+              items: <String>['Gênero', 'Aventura', 'Acao','Suspense','Terror','Drama', 'Comedia'].map((String value) {
                 return DropdownMenuItem<String>(
                   value: value,
                   child: Text(value),
@@ -27,7 +42,7 @@ class VideoList extends StatelessWidget {
               value: 'Gênero',
             ),
             DropdownButton<String>(
-              items: <String>['Tipo', 'Trailer', 'Filme', 'Série', 'Documentário'].map((String value) {
+              items: <String>['Tipo', 'Filme', 'Série'].map((String value) {
                 return DropdownMenuItem<String>(
                   value: value,
                   child: Text(value),
@@ -42,7 +57,7 @@ class VideoList extends StatelessWidget {
         ),
         Expanded(
           child: ListView.builder(
-            itemCount: videos.length,
+            itemCount: videos?.length,
             itemBuilder: (context, index) {
               return Card(
                 child: Padding(
@@ -51,22 +66,22 @@ class VideoList extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       ListTile(
-                        title: Text(videos[index].title),
+                        title: Text('Titulo: ${videos?[index].title}'),
                         subtitle: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Divider(), // Adiciona uma divisória antes das informações
-                            Text('Descrição: ${videos[index].description}'),
+                            Text('Descrição: ${videos?[index].description}'),
                             Divider(), // Adiciona uma divisória após cada informação
-                            Text('Tipo: ${videos[index].type}'),
+                            Text('Tipo: ${this.tipo[videos?[index].type]}'),
                             Divider(),
-                            Text('Classificação: ${videos[index].ageRestriction}'),
+                            Text('Classificação: ${videos?[index].ageRestriction}'),
                             Divider(),
-                            Text('Duração: ${videos[index].durationMinutes}'),
+                            Text('Duração: ${videos?[index].durationMinutes}'),
                             Divider(),
-                            Text('Data de Lançamento: ${videos[index].releaseDate}'),
+                            Text('Data de Lançamento: ${videos?[index].releaseDate}'),
                             Divider(),
-                            Text('Thumbnail: ${videos[index].thumbnailImageId}'),
+                            Text('Generos: ${stringGeneros(videos?[index].id)}'),
                           ],
                         ),
                       ),

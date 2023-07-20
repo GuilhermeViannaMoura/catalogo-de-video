@@ -8,6 +8,7 @@ import '../pages/editarVideo.dart';
 class AccordionPage extends StatelessWidget {
   final List<Video> videos;
   final Usuario usuario;
+  final Map<int, String> tipo = {0: 'Filme', 1: 'Serie'};
 
   AccordionPage({Key? key, required this.videos, required this.usuario}) : super(key: key);
 
@@ -50,7 +51,7 @@ class AccordionPage extends StatelessWidget {
                 SizedBox(height: 3),
                 Text("Data de Lançamento: ${video.releaseDate}", style: _contentStyle),
                 SizedBox(height: 3),
-                Text("Gêneros: ${video.thumbnailImageId}", style: _contentStyle),
+                //Text("Gêneros: ${video.thumbnailImageId}", style: _contentStyle),
                 SizedBox(height: 3),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,

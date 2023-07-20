@@ -13,7 +13,7 @@ import 'pages/editarVideo.dart';
 
 void main(){
   runApp(MaterialApp(
-    initialRoute: LoginPage.routeName,
+    initialRoute: '/',
     routes: {
       LoginPage.routeName: (context) => LoginPage(), // pagina de login
       CadastroPage.routeName: (context) => CadastroPage(), // pagina de cadastro

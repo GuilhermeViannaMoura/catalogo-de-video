@@ -74,12 +74,11 @@ class DatabaseHelper {
          await db.execute(sql);
         String sql2 = """CREATE TABLE Video(
               id INTEGER PRIMARY KEY AUTOINCREMENT,
-              title VARCHAR(2) NOT NULL,
+              title VARCHAR UNIQUE,
               description TEXT NOT NULL,
               type INTEGER NOT NULL,
               ageRestriction VARCHAR NOT NULL,
               durationMinutes INTEGER NOT NULL,
-              thumbnailImageId VARCHAR NOT NULL,
               releaseDate TEXT NOT NULL,
               idUsuario INTEGER NOT NULL,
               FOREIGN KEY(idUsuario) REFERENCES Usuario(id)
@@ -88,7 +87,7 @@ class DatabaseHelper {
          await db.execute(
             """CREATE TABLE Genero(
               id INTEGER PRIMARY KEY AUTOINCREMENT,
-              name VARCHAR NOT NULL
+              name VARCHAR UNIQUE
             );""");
             await db.execute(
             """CREATE TABLE video_genero(

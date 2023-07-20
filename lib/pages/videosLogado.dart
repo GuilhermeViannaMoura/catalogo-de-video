@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:videos/classes/usuario.dart';
+import 'package:videos/pages/meusVideos.dart';
 import '../components/videoList.dart';
 import '../classes/video.dart';
+import '../controller/db_controller.dart';
+import '../classes/genero.dart';
+import '../util/video_genero_helper.dart';
 
 class VideosLogadoPage extends StatefulWidget {
   final Usuario? usuarioLogado;
@@ -14,28 +18,36 @@ class VideosLogadoPage extends StatefulWidget {
 }
 
 class _VideosLogadoPageState extends State<VideosLogadoPage> {
-  final List<Video> listaDeVideos = [
-    Video(
-      title: "Vídeo 1",
-      description: "Descrição do Vídeo 1",
-      type: 1,
-      ageRestriction: "Livre",
-      durationMinutes: 2,
-      releaseDate: "01/01/2023",
-      thumbnailImageId: "1",
-      idUsuario: 1
-    ),
-    Video(
-      title: "Vídeo 2",
-      description: "Descrição do Vídeo 2",
-      type: 0,
-      ageRestriction: "18+",
-      durationMinutes: 2,
-      releaseDate: "15/03/2023",
-      thumbnailImageId: "2",
-      idUsuario: 1
-    ),
-  ];
+  late DataBaseController controller;
+  List<Video>? videos;
+  Map<int,List<Genero>>? infos;
+  
+  _VideosLogadoPageState(){
+    this.controller = DataBaseController();
+  }
+
+  
+
+  void pegarVideos() async{
+    controller.getAllVideos().then((data) => 
+      setState(() {
+        this.videos = data;
+      })
+    );
+  }
+
+  void pegarGeneros() async{
+    Future.wait([controller.getAllGeneros(), controller.getAllVideosGeneros()]).then((List values) => setState(() {
+        this.infos = getMapGenerosByVideoId(values[0], values[1]);
+      }));
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    pegarVideos();
+    pegarGeneros();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,8 +56,7 @@ class _VideosLogadoPageState extends State<VideosLogadoPage> {
         title: Text("CatalogoV"),
         actions: [TextButton(
             onPressed: () {
-              // Ação do botão "Logar"
-              Navigator.pushNamed(context, "/meusVideos"); // Volta para a tela anterior
+             Navigator.push(context, MaterialPageRoute(builder: (context) => MeusVideosPage(usuarioLogado: widget.usuarioLogado)));
             },
             child: Text(
               "Meus Videos",
@@ -66,7 +77,7 @@ class _VideosLogadoPageState extends State<VideosLogadoPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 16.0),
-        child: VideoList(listaDeVideos),
+        child: VideoList(videos,infos),
       ),
     );
   }

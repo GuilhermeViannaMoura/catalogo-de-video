@@ -64,6 +64,22 @@ class DataBaseController {
     );
   }
 
+  //Pega a lista de generos de um video 
+  Future<List<Genero>> getGenerosVideo(Video video) async {
+    var db = await con.db;
+    String sql = """
+      SELECT 
+        Genero.id AS id,
+        Genero.name AS name
+      FROM
+        Genero
+      INNER JOIN video_genero ON video_genero.generoId=Genero.id
+      WHERE video_genero.videoId = ${video.id};
+    """;
+    var res = await db.rawQuery(sql);
+
+    return List.generate(res.length, (index) => Genero.fromJson(res[index]));
+  } 
 
   //Lista todos os videos
   Future<List<Video>?> getAllVideos() async {
@@ -91,6 +107,20 @@ class DataBaseController {
 
     return List.generate(maps.length, (index) => Genero.fromJson(maps[index]));
   }
+
+  //Lista todos os videos generos
+  Future<List<VideoGenero>?> getAllVideosGeneros() async {
+    final db = await con.db;
+
+    final List<Map<String, dynamic>> maps = await db.query("video_genero");
+
+    if (maps.isEmpty) {
+      return null;
+    }
+
+    return List.generate(maps.length, (index) => VideoGenero.fromJson(maps[index]));
+  }
+
 
   //Login do usuario
   Future<Usuario> getLogin(String email, String password) async {

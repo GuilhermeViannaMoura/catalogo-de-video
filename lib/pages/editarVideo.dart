@@ -34,7 +34,7 @@ class _EditarVideoPageState extends State<EditarVideoPage> {
     _classificacao = widget.video!.ageRestriction;
     _duracao = widget.video!.durationMinutes;
     _dataLancamento = widget.video!.releaseDate;
-    _thumbnail = widget.video!.thumbnailImageId;
+    //_thumbnail = widget.video!.thumbnailImageId;
   }
 
   @override
@@ -140,7 +140,7 @@ class _EditarVideoPageState extends State<EditarVideoPage> {
                     widget.video!.ageRestriction = _classificacao!;
                     widget.video!.durationMinutes = _duracao!;
                     widget.video!.releaseDate = _dataLancamento!;
-                    widget.video!.thumbnailImageId = _thumbnail!;
+                    //widget.video!.thumbnailImageId = _thumbnail!;
 
                     // Retorne à tela anterior
                     Navigator.pop(context);

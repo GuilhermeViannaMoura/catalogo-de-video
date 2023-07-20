@@ -23,7 +23,6 @@ class _MeusVideosPageState extends State<MeusVideosPage> {
       ageRestriction: "Livre",
       durationMinutes: 3,
       releaseDate: "01/01/2023",
-      thumbnailImageId: "Ação",
       idUsuario: 1
     ),
     Video(
@@ -33,7 +32,6 @@ class _MeusVideosPageState extends State<MeusVideosPage> {
       ageRestriction: "Livre",
       durationMinutes: 5,
       releaseDate: "01/01/2023",
-      thumbnailImageId: "Terror",
       idUsuario: 1
     ),
   ];
