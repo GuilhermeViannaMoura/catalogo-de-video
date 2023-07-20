@@ -1,7 +1,3 @@
-import '../classes/video.dart';
-import '../classes/video_genero.dart';
-import '../classes/usuario.dart';
-import '../classes/genero.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 

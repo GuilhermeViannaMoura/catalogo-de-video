@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:sqflite/sqflite.dart';
 import 'package:videos/controller/db_controller.dart';
-import 'login.dart';
-import 'dart:convert';
 import '../classes/video.dart';
 import '../classes/usuario.dart';
 import '../components/videoList.dart';
-import '../util/database_helper.dart';
 
 
 
 class VideosAnonimoPage extends StatefulWidget {
-  const VideosAnonimoPage({Key? key});
+  static const routeName = "/homeAnonimo";
+
+  VideosAnonimoPage({Key? key});
 
   @override
   State<VideosAnonimoPage> createState() => _VideosAnonimoPageState();

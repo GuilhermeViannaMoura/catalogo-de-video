@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import 'login.dart';
-import 'dart:convert';
+
 
 
 class CadastroPage extends StatefulWidget {
-  const CadastroPage({Key? key});
+  static const routeName = "/cadastro";
+
+  
+  CadastroPage({Key? key});
 
   @override
   State<CadastroPage> createState() => _CadastroPageState();

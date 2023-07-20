@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:videos/classes/usuario.dart';
-import 'login.dart';
-import 'dart:convert';
 import '../components/videoList.dart';
 import '../classes/video.dart';
 
-class VideosAuthPage extends StatefulWidget {
+class VideosLogadoPage extends StatefulWidget {
   final Usuario? usuarioLogado;
-  const VideosAuthPage({Key? key, this.usuarioLogado}) : super(key: key);
+  static const routeName = "/homeLogado";
+
+  VideosLogadoPage({Key? key, this.usuarioLogado}) : super(key: key);
 
   @override
-  State<VideosAuthPage> createState() => _VideosAuthPageState();
+  State<VideosLogadoPage> createState() => _VideosLogadoPageState();
 }
 
-class _VideosAuthPageState extends State<VideosAuthPage> {
+class _VideosLogadoPageState extends State<VideosLogadoPage> {
   final List<Video> listaDeVideos = [
     Video(
       title: "Vídeo 1",

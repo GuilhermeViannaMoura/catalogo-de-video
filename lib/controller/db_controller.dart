@@ -35,16 +35,6 @@ class DataBaseController {
         conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
-  //Atualiza Usuario
-/*static Future<int> updateUsuario(Usuario usuario) async {
-    final db = await con.db;
-    return await db.update("Usuario", usuario.toJson(),
-        where: 'id = ?',
-        whereArgs: [usuario.id],
-        conflictAlgorithm: ConflictAlgorithm.replace);
-  } */
-//Nao acho que precisa atualizar usuario so os videos
-
   //Update do Video
    Future<int> updateVideo(Video video) async {
     final db = await con.db;
