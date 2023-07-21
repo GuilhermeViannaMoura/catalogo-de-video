@@ -1,0 +1,172 @@
+import 'package:flutter/material.dart';
+import 'package:videos/controller/db_controller.dart';
+import '../classes/video.dart';
+import '../classes/usuario.dart';
+import 'meusVideos.dart';
+
+class EditarVideoPage extends StatefulWidget {
+  final Video? video;
+  final Usuario? usuario;
+  static const routeName = "/editarVideo";
+
+  EditarVideoPage({Key? key, this.video, this.usuario}): super(key:key);
+
+  @override
+  _EditarVideoPageState createState() => _EditarVideoPageState();
+}
+
+class _EditarVideoPageState extends State<EditarVideoPage> {
+  final _formKey = GlobalKey<FormState>();
+  late DataBaseController controller;
+  final Map<int, String> tipos = {0:'Filme', 1:'Serie'};
+  final Map<String, int> tiposReverse = {'filme':0, 'serie':1};
+
+  String? _nome;
+  String? _descricao;
+  String? _tipo;
+  String? _classificacao;
+  int? _duracao;
+  String? _dataLancamento;
+
+  _EditarVideoPageState(){
+    this.controller = DataBaseController();
+  }
+
+  void update()async{
+    await controller.updateVideo(widget.video!);
+    Navigator.push(context, MaterialPageRoute(builder: (context) => MeusVideosPage(usuarioLogado: widget.usuario)));
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _nome = widget.video!.title;
+    _descricao = widget.video!.description;
+    _tipo = tipos[widget.video!.type];
+    _classificacao = widget.video!.ageRestriction;
+    _duracao = widget.video!.durationMinutes;
+    _dataLancamento = widget.video!.releaseDate;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Editar Vídeo"),
+        automaticallyImplyLeading: false,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey,
+          child: ListView(
+            children: [
+              TextFormField(
+                initialValue: _nome,
+                decoration: InputDecoration(labelText: 'Nome'),
+                onChanged: (value) => {if(value!= _nome){
+                  _nome = value
+                }},
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Por favor, insira um titulo';
+                  }
+                  return null;
+                },
+              ),
+              TextFormField(
+                initialValue: _descricao,
+                decoration: InputDecoration(labelText: 'Descrição'),
+                onChanged: (value) => {if(value!= _descricao){
+                  _descricao = value
+                }},
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Por favor, insira uma descrição';
+                  }
+                  return null;
+                },
+              ),
+              DropdownButtonFormField(
+                value: _tipo,
+                onChanged: (String? newValue)=> {if(newValue!= _tipo){
+                  _tipo = newValue
+                }},
+                decoration: InputDecoration(
+                  labelText: 'Tipo',
+                  ),
+                items: <String>['Filme', 'Serie'].map((String value){
+                  return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                }).toList(),
+              ),
+              TextFormField(
+                initialValue: _classificacao,
+                decoration: InputDecoration(labelText: 'Classificação'),
+                onChanged: (value) => {if(value!= _classificacao){
+                  _classificacao = value
+                }},
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Por favor, insira uma classificacao';
+                  }
+                  return null;
+                },
+              ),
+              TextFormField(
+                initialValue: _duracao.toString(),
+                decoration: InputDecoration(labelText: 'Duração'),
+                onChanged: (value) => {if(int.parse(value)!= _duracao){
+                  _duracao = int.parse(value)
+                }},
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Por favor, insira uma duracao';
+                  }
+                  return null;
+                },
+              ),
+              TextFormField(
+                initialValue: _dataLancamento,
+                decoration: InputDecoration(labelText: 'Data de Lançamento'),
+                onChanged: (value) => {if(value!= _dataLancamento){
+                  _dataLancamento = value
+                }},
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Por favor, insira uma data de lancamento';
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    widget.video!.title = _nome!;
+                    widget.video!.description = _descricao!;
+                    widget.video!.type = tiposReverse[_tipo!.toLowerCase()]!;
+                    widget.video!.ageRestriction = _classificacao!;
+                    widget.video!.durationMinutes = _duracao!;
+                    widget.video!.releaseDate = _dataLancamento!;
+                    update();
+                  }
+                },
+                child: Text('Salvar'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text('Cancelar'),
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.grey),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
