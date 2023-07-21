@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:videos/pages/login.dart';
 import 'package:videos/pages/videosLogado.dart';
-import '../classes/video.dart';
 import '../classes/usuario.dart';
 import '../components/myVideoList.dart';
 import 'adicionarVideo.dart';
-import '../controller/db_controller.dart';
 
 class MeusVideosPage extends StatefulWidget {
   final Usuario? usuarioLogado;
@@ -18,36 +17,6 @@ class MeusVideosPage extends StatefulWidget {
 
 
 class _MeusVideosPageState extends State<MeusVideosPage> {
-  late DataBaseController controller;
-  List<Video>? videosUser;
-
-  _MeusVideosPageState(){
-    this.controller = DataBaseController();
-  }
-
-  void pegarVideos() async{
-    controller.getAllVideos().then((data) =>
-      setState(() {
-        this.videosUser = userVideos(data!);
-      })
-    );
-  }
-
-  List<Video> userVideos(List<Video> videos){
-      List<Video> l = [];
-      for(int i = 0; i < videos.length; i++){
-        if(videos[i].idUsuario == widget.usuarioLogado!.id){
-          l.add(videos[i]);
-        }
-      }
-      return l;
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    pegarVideos();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +44,7 @@ class _MeusVideosPageState extends State<MeusVideosPage> {
           ),
           TextButton(
             onPressed: () {
-              Navigator.pop(context); // Volta para a tela anterior
+              Navigator.pushNamed(context, LoginPage.routeName);
             },
             child: Text(
               "Sair",
@@ -84,7 +53,7 @@ class _MeusVideosPageState extends State<MeusVideosPage> {
           ),
         ],
       ),
-      body: AccordionPage(videos: videosUser, usuario: widget.usuarioLogado!),
+      body: AccordionPage(usuario: widget.usuarioLogado!),
     );
   }
 }

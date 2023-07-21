@@ -12,7 +12,7 @@ import '../pages/login.dart';
 class VideosAnonimoPage extends StatefulWidget {
   static const routeName = "/homeAnonimo";
 
-  VideosAnonimoPage({Key? key});
+  VideosAnonimoPage();
 
   @override
   State<VideosAnonimoPage> createState() => _VideosAnonimoPageState();

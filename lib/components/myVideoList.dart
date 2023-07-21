@@ -1,23 +1,64 @@
 import 'package:videos/classes/usuario.dart';
+import 'package:videos/controller/db_controller.dart';
 import '../classes/video.dart';
 import 'package:flutter/material.dart';
 import 'package:accordion/accordion.dart';
 import 'package:accordion/controllers.dart';
 import '../pages/editarVideo.dart';
 
-class AccordionPage extends StatelessWidget {
-  final List<Video>? videos;
+class AccordionPage extends StatefulWidget {
   final Usuario? usuario;
+  
+
+  AccordionPage({this.usuario});
+  @override
+  State<AccordionPage> createState() => _AccordionPageState();
+}
+
+class _AccordionPageState extends State<AccordionPage> {
+  List<Video>? videos;
+  late DataBaseController controller;
+
   final Map<int, String> tipo = {0: 'Filme', 1: 'Serie'};
-
-  AccordionPage({this.videos, this.usuario});
-
   final _headerStyle = const TextStyle(
     color: Color(0xffffffff), fontSize: 15, fontWeight: FontWeight.bold);
-  final _contentStyleHeader = const TextStyle(
-    color: Color(0xff999999), fontSize: 14, fontWeight: FontWeight.w700);
+  /* final _contentStyleHeader = const TextStyle(
+    color: Color(0xff999999), fontSize: 14, fontWeight: FontWeight.w700); */
   final _contentStyle = const TextStyle(
     color: Color(0xff999999), fontSize: 14, fontWeight: FontWeight.normal);
+
+  _AccordionPageState(){
+    this.controller = DataBaseController();
+  }
+
+  void removerVideo(Video video) async{
+    await controller.deleteVideo(video);
+    pegarVideos();
+  }
+
+  void pegarVideos() async{
+    controller.getAllVideos().then((data) =>
+      setState(() {
+        this.videos = userVideos(data!);
+      })
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    pegarVideos();
+  }
+
+  List<Video> userVideos(List<Video> videos){
+      List<Video> l = [];
+      for(int i = 0; i < videos.length; i++){
+        if(videos[i].idUsuario == widget.usuario!.id){
+          l.add(videos[i]);
+        }
+      }
+      return l;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +99,7 @@ class AccordionPage extends StatelessWidget {
                   children: [
                     ElevatedButton(
                       onPressed: () {
-                        // Ação do botão "Remover"
+                        removerVideo(video);
                       },
                       style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
                       child: Text('Remover'),
@@ -69,7 +110,7 @@ class AccordionPage extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => EditarVideoPage(video: video, usuario: usuario),
+                            builder: (context) => EditarVideoPage(video: video, usuario: widget.usuario),
                           ),
                         );
                       },

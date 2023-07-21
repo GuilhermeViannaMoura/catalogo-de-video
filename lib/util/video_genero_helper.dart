@@ -57,6 +57,9 @@ void setUp(DataBaseController controller) async {
         );
         int genero1Id = await controller.addGenero(genero1);
         int genero2Id = await controller.addGenero(genero2);
+        await controller.addGenero(genero3);
+        await controller.addGenero(genero4);
+        await controller.addGenero(genero5);
         int genero6Id = await controller.addGenero(genero6);
        
         Usuario user = Usuario(name: 'name', email: 'email', password: 'password');
@@ -83,10 +86,8 @@ void setUp(DataBaseController controller) async {
 
         List<int> video1Generos = [genero1Id, genero2Id];
         List<int> video2Generos = [genero6Id];
-        int n = await controller.addVideo(video1, video1Generos);
-        int j = await controller.addVideo(video2, video2Generos);
-        print(n);
-        print(j);
+        await controller.addVideo(video1, video1Generos);
+        await controller.addVideo(video2, video2Generos);
   }else{
       print('setup feito');
   }

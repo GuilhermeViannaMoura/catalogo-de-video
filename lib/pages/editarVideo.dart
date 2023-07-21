@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:videos/controller/db_controller.dart';
 import '../classes/video.dart';
 import '../classes/usuario.dart';
+import 'meusVideos.dart';
 
 class EditarVideoPage extends StatefulWidget {
   final Video? video;
@@ -15,6 +17,7 @@ class EditarVideoPage extends StatefulWidget {
 
 class _EditarVideoPageState extends State<EditarVideoPage> {
   final _formKey = GlobalKey<FormState>();
+  late DataBaseController controller;
 
   String? _nome;
   String? _descricao;
@@ -22,19 +25,25 @@ class _EditarVideoPageState extends State<EditarVideoPage> {
   String? _classificacao;
   int? _duracao;
   String? _dataLancamento;
-  String? _thumbnail;
+
+  _EditarVideoPageState(){
+    this.controller = DataBaseController();
+  }
+
+  void update()async{
+    await controller.updateVideo(widget.video!);
+    Navigator.push(context, MaterialPageRoute(builder: (context) => MeusVideosPage(usuarioLogado: widget.usuario)));
+  }
 
   @override
   void initState() {
     super.initState();
-    // Preenche os campos do formulário com as informações do vídeo
     _nome = widget.video!.title;
     _descricao = widget.video!.description;
     _tipo = widget.video!.type;
     _classificacao = widget.video!.ageRestriction;
     _duracao = widget.video!.durationMinutes;
     _dataLancamento = widget.video!.releaseDate;
-    //_thumbnail = widget.video!.thumbnailImageId;
   }
 
   @override
@@ -115,17 +124,6 @@ class _EditarVideoPageState extends State<EditarVideoPage> {
                   return null;
                 },
               ),
-              TextFormField(
-                initialValue: _thumbnail,
-                decoration: InputDecoration(labelText: 'Gênero'),
-                onChanged: (value) => _thumbnail = value,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor, insira uma descrição';
-                  }
-                  return null;
-                },
-              ),
               SizedBox(height: 16),
               ElevatedButton(
                 onPressed: () {
@@ -140,10 +138,7 @@ class _EditarVideoPageState extends State<EditarVideoPage> {
                     widget.video!.ageRestriction = _classificacao!;
                     widget.video!.durationMinutes = _duracao!;
                     widget.video!.releaseDate = _dataLancamento!;
-                    //widget.video!.thumbnailImageId = _thumbnail!;
-
-                    // Retorne à tela anterior
-                    Navigator.pop(context);
+                    update();
                   }
                 },
                 child: Text('Salvar'),
