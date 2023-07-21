@@ -17,11 +17,12 @@ class AdicionarVideoPage extends StatefulWidget {
 class _AdicionarVideoPageState extends State<AdicionarVideoPage> {
   final _formKey = GlobalKey<FormState>();
   final Map<int,String> tipos = {0 : 'Filme', 1 : 'Serie'};
+  final Map<String, int> tiposReverse = {'filme':0, 'serie':1};
   late DataBaseController controller;
 
   String? _titulo;
   String? _descricao;
-  int? _tipo;
+  String? _tipo;
   String? _classificacao;
   int? _duracao;
   String? _dataLancamento;
@@ -41,7 +42,7 @@ class _AdicionarVideoPageState extends State<AdicionarVideoPage> {
         if (videoCheck) {
           await controller.addVideo(Video(title: _titulo!, 
           description: _descricao!, 
-          type: _tipo!, 
+          type: tiposReverse[_tipo?.toLowerCase()]!, 
           ageRestriction: _classificacao!, 
           durationMinutes: _duracao!, 
           releaseDate: _dataLancamento!, 
@@ -106,7 +107,7 @@ class _AdicionarVideoPageState extends State<AdicionarVideoPage> {
                         child: SizedBox(
                           width: 500,
                           child: TextFormField(
-                            onSaved: (newValue) => _tipo = int.parse(newValue!),
+                            onSaved: (newValue) => _tipo = newValue!,
                             decoration: InputDecoration(
                               labelText: 'Tipo',
                               border: OutlineInputBorder(),

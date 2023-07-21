@@ -18,10 +18,12 @@ class EditarVideoPage extends StatefulWidget {
 class _EditarVideoPageState extends State<EditarVideoPage> {
   final _formKey = GlobalKey<FormState>();
   late DataBaseController controller;
+  final Map<int, String> tipos = {0:'Filme', 1:'Serie'};
+  final Map<String, int> tiposReverse = {'Filme':0, 'Serie':1};
 
   String? _nome;
   String? _descricao;
-  int? _tipo;
+  String? _tipo;
   String? _classificacao;
   int? _duracao;
   String? _dataLancamento;
@@ -40,7 +42,7 @@ class _EditarVideoPageState extends State<EditarVideoPage> {
     super.initState();
     _nome = widget.video!.title;
     _descricao = widget.video!.description;
-    _tipo = widget.video!.type;
+    _tipo = tipos[widget.video!.type];
     _classificacao = widget.video!.ageRestriction;
     _duracao = widget.video!.durationMinutes;
     _dataLancamento = widget.video!.releaseDate;
@@ -81,9 +83,9 @@ class _EditarVideoPageState extends State<EditarVideoPage> {
                 },
               ),
               TextFormField(
-                initialValue: _tipo.toString(),
+                initialValue: _tipo,
                 decoration: InputDecoration(labelText: 'Tipo'),
-                onChanged: (value) => _tipo = int.parse(value),
+                onChanged: (value) => _tipo = value,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Por favor, insira uma descrição';
@@ -134,7 +136,7 @@ class _EditarVideoPageState extends State<EditarVideoPage> {
                     // Atualize o objeto "video" com os novos valores
                     widget.video!.title = _nome!;
                     widget.video!.description = _descricao!;
-                    widget.video!.type = _tipo!;
+                    widget.video!.type = tiposReverse[_tipo?.toLowerCase()]!;
                     widget.video!.ageRestriction = _classificacao!;
                     widget.video!.durationMinutes = _duracao!;
                     widget.video!.releaseDate = _dataLancamento!;
