@@ -1,20 +1,70 @@
 import 'package:flutter/material.dart';
 import '../classes/video.dart';
 import '../classes/genero.dart';
+import '../controller/db_controller.dart';
+import '../util/video_genero_helper.dart';
 
-
-class VideoList extends StatelessWidget {
-  final List<Video>? videos;
-  final Map<int, List<Genero>>? generos;
-  final Map<int, String> tipos = {0:'Filme', 1:'Serie'};
+class VideoList extends StatefulWidget {
   
 
-  VideoList(this.videos, this.generos);
+  VideoList();
+  @override
+  State<VideoList> createState() => _VideoListState();
+}
+
+class _VideoListState extends State<VideoList> {
+  final Map<int, String> tipos = {0:'Filme', 1:'Serie'};
+  late DataBaseController controller;
+  List<Video>? videos;
+  Map<int,List<Genero>>? infos;
+
+  String? _tipo = 'Tipo';
+  
+  _VideoListState(){
+    this.controller = DataBaseController();
+  }
+
+  
+  void pegarVideos() async{
+    controller.getAllVideos().then((data) => 
+      filtrarVideo(data)
+    );
+  }
+
+  void pegarGeneros() async{
+    Future.wait([controller.getAllGeneros(), controller.getAllVideosGeneros()]).then((List values) => setState(() {
+        this.infos = getMapGenerosByVideoId(values[0], values[1]);
+      }));
+  }
+
+  void filtrarVideo(List<Video>? videos){
+      List<Video>? f = [];
+      if(videos != null){
+        if(this._tipo == 'Tipo'){
+          f = videos;
+        }
+        for(int i=0; i < videos.length; i++){
+          if(tipos[videos[i].type]== this._tipo){
+            f.add(videos[i]);
+          }
+        }
+      }
+      setState(() {
+        this.videos = f;
+      });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    pegarVideos();
+    pegarGeneros();
+  }
 
 
   String stringGeneros(int? idVideo){
     var frase = '';
-    List<Genero>? videoGeneros = this.generos?[idVideo!];
+    List<Genero>? videoGeneros = this.infos?[idVideo!];
     if(videoGeneros != null){
     for(int i = 0; i < videoGeneros.length; i ++){
       frase = frase+' '+ videoGeneros[i].name;
@@ -43,15 +93,21 @@ class VideoList extends StatelessWidget {
               value: 'Gênero',
             ),
             DropdownButton<String>(
-              items: <String>['Tipo', 'Filme', 'Série'].map((String value) {
+              items: <String>['Tipo', 'Filme', 'Serie'].map((String value) {
                 return DropdownMenuItem<String>(
                   value: value,
                   child: Text(value),
                 );
               }).toList(),
               onChanged: (String? newValue) {
+                if(newValue != _tipo){
+                  setState(() {
+                  _tipo = newValue;
+                });
+                pegarVideos();
+                }
               },
-              value: 'Tipo',
+              value: _tipo,
             ),
           ],
         ),
