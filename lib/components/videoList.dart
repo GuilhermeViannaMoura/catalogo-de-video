@@ -19,9 +19,10 @@ class _VideoListState extends State<VideoList> {
   Map<int,List<Genero>>? infos;
 
   String? _tipo = 'Tipo';
+  String? _genero = 'Gênero';
   
   _VideoListState(){
-    this.controller = DataBaseController();
+    controller = DataBaseController();
   }
 
   
@@ -33,25 +34,44 @@ class _VideoListState extends State<VideoList> {
 
   void pegarGeneros() async{
     Future.wait([controller.getAllGeneros(), controller.getAllVideosGeneros()]).then((List values) => setState(() {
-        this.infos = getMapGenerosByVideoId(values[0], values[1]);
+        infos = getMapGenerosByVideoId(values[0], values[1]);
       }));
   }
 
   void filtrarVideo(List<Video>? videos){
-      List<Video>? f = [];
+      List<Video> f = [];
       if(videos != null){
-        if(this._tipo == 'Tipo'){
+        if(_tipo == 'Tipo'){
           f = videos;
-        }
+        }else{
         for(int i=0; i < videos.length; i++){
-          if(tipos[videos[i].type]== this._tipo){
+          if(tipos[videos[i].type]== _tipo){
             f.add(videos[i]);
           }
         }
+        }
       }
       setState(() {
-        this.videos = f;
+        this.videos = filtraGeneros(f);
       });
+  }
+
+  List<Video> filtraGeneros(List<Video> videos){
+    List<Video> f = [];
+      if(_genero == 'Gênero' ){
+        f = videos;
+      }else{
+        for(int i=0; i < videos.length; i++){
+          String generos = stringGeneros(videos[i].id);
+          final splitted = generos.split(', ');
+          for(int j=0; j < splitted.length; j++){
+            if(splitted[j] == _genero){
+              f.add(videos[i]);
+            }
+          }
+        }
+      }
+    return f;
   }
 
   @override
@@ -63,11 +83,15 @@ class _VideoListState extends State<VideoList> {
 
 
   String stringGeneros(int? idVideo){
-    var frase = '';
-    List<Genero>? videoGeneros = this.infos?[idVideo!];
+    String frase = '';
+    List<Genero>? videoGeneros = infos?[idVideo!];
     if(videoGeneros != null){
     for(int i = 0; i < videoGeneros.length; i ++){
-      frase = frase+' '+ videoGeneros[i].name;
+      if(frase == ''){
+        frase = frase + videoGeneros[i].name;
+      }else{
+      frase = frase+', '+ videoGeneros[i].name;
+      }
     }
     }
     return frase;
@@ -88,9 +112,14 @@ class _VideoListState extends State<VideoList> {
                 );
               }).toList(),
               onChanged: (String? newValue) {
-                // Lógica para tratar a seleção do menu Gênero
+                if(newValue != _genero){
+                setState(() {
+                  _genero = newValue;
+                });
+                pegarVideos();
+                }
               },
-              value: 'Gênero',
+              value: _genero,
             ),
             DropdownButton<String>(
               items: <String>['Tipo', 'Filme', 'Serie'].map((String value) {
